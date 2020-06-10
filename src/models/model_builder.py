@@ -116,9 +116,9 @@ class Bert(nn.Module):
     def __init__(self, temp_dir, cased=False, finetune=False):
         super(Bert, self).__init__()
         if(cased):
-            self.model = BertModel.from_pretrained('bert_models/cased/', cache_dir=temp_dir)
+            self.model = BertModel.from_pretrained('dccuchile/bert-base-spanish-wwm-cased', cache_dir=temp_dir)
         else:
-            self.model = BertModel.from_pretrained('bert_models/uncased/', cache_dir=temp_dir)
+            self.model = BertModel.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', cache_dir=temp_dir)
 
         self.finetune = finetune
 

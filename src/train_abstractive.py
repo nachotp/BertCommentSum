@@ -186,7 +186,10 @@ def validate(args, device_id, pt, step):
                                         args.batch_size, device,
                                         shuffle=False, is_test=False)
 
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True, cache_dir=args.temp_dir)
+    if args.cased:
+        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-cased', cache_dir=args.temp_dir)
+    else:
+        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', do_lower_case=True, cache_dir=args.temp_dir)
     symbols = {'BOS': tokenizer.vocab['[unused0]'], 'EOS': tokenizer.vocab['[unused1]'],
                'PAD': tokenizer.vocab['[PAD]'], 'EOQ': tokenizer.vocab['[unused2]']}
 
@@ -218,7 +221,10 @@ def test_abs(args, device_id, pt, step):
     test_iter = data_loader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
                                        args.test_batch_size, device,
                                        shuffle=False, is_test=True)
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True, cache_dir=args.temp_dir)
+    if args.cased:
+        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-cased', cache_dir=args.temp_dir)
+    else:
+        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', do_lower_case=True, cache_dir=args.temp_dir)
     symbols = {'BOS': tokenizer.vocab['[unused0]'], 'EOS': tokenizer.vocab['[unused1]'],
                'PAD': tokenizer.vocab['[PAD]'], 'EOQ': tokenizer.vocab['[unused2]']}
     predictor = build_predictor(args, tokenizer, symbols, model, logger)
@@ -227,7 +233,7 @@ def test_abs(args, device_id, pt, step):
 
 def test_text_abs(args, device_id, pt, step):
     device = "cpu" if args.visible_gpus == '-1' else "cuda"
-    if pt != ''):
+    if pt != '':
         test_fro = pt
     else:
         test_from = args.test_from
@@ -236,7 +242,7 @@ def test_text_abs(args, device_id, pt, step):
     checkpoint = torch.load(test_from, map_location=lambda storage, loc: storage)
     opt = vars(checkpoint['opt'])
     for k in opt.keys():
-        if (k in model_flags):
+        if k in model_flags:
             setattr(args, k, opt[k])
     print(args)
 
@@ -247,9 +253,9 @@ def test_text_abs(args, device_id, pt, step):
                                        args.test_batch_size, device,
                                        shuffle=False, is_test=True)
     if args.cased:
-        tokenizer = BertTokenizer.from_pretrained('bert_models/cased/', cache_dir=args.temp_dir)
+        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-cased', cache_dir=args.temp_dir)
     else:
-        tokenizer = BertTokenizer.from_pretrained('bert_models/uncased/', do_lower_case=True, cache_dir=args.temp_dir)
+        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', do_lower_case=True, cache_dir=args.temp_dir)
     symbols = {'BOS': tokenizer.vocab['[unused0]'], 'EOS': tokenizer.vocab['[unused1]'],
                'PAD': tokenizer.vocab['[PAD]'], 'EOQ': tokenizer.vocab['[unused2]']}
     predictor = build_predictor(args, tokenizer, symbols, model, logger)
@@ -263,9 +269,9 @@ def baseline(args, cal_lead=False, cal_oracle=False):
 
     trainer = build_trainer(args, '-1', None, None, None)
     #
-    if (cal_lead):
+    if cal_lead:
         trainer.test(test_iter, 0, cal_lead=True)
-    elif (cal_oracle):
+    elif cal_oracle:
         trainer.test(test_iter, 0, cal_oracle=True)
 
 
@@ -319,7 +325,10 @@ def train_abs_single(args, device_id):
 
     logger.info(model)
 
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True, cache_dir=args.temp_dir)
+    if args.cased:
+        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-cased', cache_dir=args.temp_dir)
+    else:
+        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', do_lower_case=True, cache_dir=args.temp_dir)
     symbols = {'BOS': tokenizer.vocab['[unused0]'], 'EOS': tokenizer.vocab['[unused1]'],
                'PAD': tokenizer.vocab['[PAD]'], 'EOQ': tokenizer.vocab['[unused2]']}
 
