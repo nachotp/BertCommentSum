@@ -1,6 +1,6 @@
 # Bert Abstractive Comment Summarization
 
-**This code is based on PreSumm from the EMNLP 2019 paper [Text Summarization with Pretrained Encoders](https://arxiv.org/abs/1908.08345) [(Github)](https://github.com/nlpyang/PreSumm/)**
+**This code is based on PreSumm from the EMNLP 2019 paper [Text Summarization with Pretrained Encoders](https://arxiv.org/abs/1908.08345) ([repo](https://github.com/nlpyang/PreSumm/))**
 
 
 **Python version**: This code is in Python 3.6
@@ -16,8 +16,9 @@ Some codes are borrowed from ONMT(https://github.com/OpenNMT/OpenNMT-py)
 ## BERT Model used
 [BETO](https://github.com/dccuchile/beto) from [Spanish Pre-Trained BERT Model and Evaluation Data](https://users.dcc.uchile.cl/~jperez/papers/pml4dc2020.pdf) 
 
+### Preprocessing
 
-####  Step 3. Sentence Splitting and Tokenization
+#### Sentence Splitting and Tokenization
 
 ```
 python preprocess.py -mode tokenize -raw_path RAW_PATH -save_path TOKENIZED_PATH
@@ -26,7 +27,7 @@ python preprocess.py -mode tokenize -raw_path RAW_PATH -save_path TOKENIZED_PATH
 * `RAW_PATH` is the directory containing story files (`../raw_stories`), `JSON_PATH` is the target directory to save the generated json files (`../merged_stories_tokenized`)
 
 
-####  Step 4. Format to Simpler Json Files
+#### Format to Simpler Json Files
  
 ```
 python preprocess.py -mode format_to_lines -raw_path RAW_PATH -save_path JSON_PATH -n_cpus 1 -use_bert_basic_tokenizer false -map_path MAP_PATH
@@ -34,7 +35,7 @@ python preprocess.py -mode format_to_lines -raw_path RAW_PATH -save_path JSON_PA
 
 * `RAW_PATH` is the directory containing tokenized files (`../merged_stories_tokenized`), `JSON_PATH` is the target directory to save the generated json files (`../json_data/cnndm`), `MAP_PATH` is the  directory containing the urls files (`../urls`)
 
-####  Step 5. Format to PyTorch Files
+#### Format to PyTorch Files
 ```
 python preprocess.py -mode format_to_bert -raw_path JSON_PATH -save_path BERT_DATA_PATH  -lower -n_cpus 1 -log_file ../logs/preprocess.log
 ```
