@@ -1,6 +1,6 @@
 # BertCommentSum
 
-**This code is based on PreSumm from the EMNLP 2019 paper [Text Summarization with Pretrained Encoders](https://arxiv.org/abs/1908.08345) [Github](https://github.com/nlpyang/PreSumm/)**
+**This code is based on PreSumm from the EMNLP 2019 paper [Text Summarization with Pretrained Encoders](https://arxiv.org/abs/1908.08345) [(Github)](https://github.com/nlpyang/PreSumm/)**
 
 
 **Python version**: This code is in Python3.6
