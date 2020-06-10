@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
     parser.add_argument("-max_pos", default=512, type=int)
     parser.add_argument("-use_interval", type=str2bool, nargs='?',const=True,default=True)
-    parser.add_argument("-large", type=str2bool, nargs='?',const=True,default=False)
+    parser.add_argument("-cased", type=str2bool, nargs='?',const=True,default=False)
     parser.add_argument("-load_from_extractive", default='', type=str)
 
     parser.add_argument("-sep_optim", type=str2bool, nargs='?',const=True,default=False)

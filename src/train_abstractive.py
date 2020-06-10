@@ -227,8 +227,8 @@ def test_abs(args, device_id, pt, step):
 
 def test_text_abs(args, device_id, pt, step):
     device = "cpu" if args.visible_gpus == '-1' else "cuda"
-    if (pt != ''):
-        test_from = pt
+    if pt != ''):
+        test_fro = pt
     else:
         test_from = args.test_from
     logger.info('Loading checkpoint from %s' % test_from)
@@ -246,7 +246,10 @@ def test_text_abs(args, device_id, pt, step):
     test_iter = data_loader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
                                        args.test_batch_size, device,
                                        shuffle=False, is_test=True)
-    tokenizer = BertTokenizer.from_pretrained('bert_data/uncased/', do_lower_case=True, cache_dir=args.temp_dir)
+    if args.cased:
+        tokenizer = BertTokenizer.from_pretrained('bert_models/cased/', cache_dir=args.temp_dir)
+    else:
+        tokenizer = BertTokenizer.from_pretrained('bert_models/uncased/', do_lower_case=True, cache_dir=args.temp_dir)
     symbols = {'BOS': tokenizer.vocab['[unused0]'], 'EOS': tokenizer.vocab['[unused1]'],
                'PAD': tokenizer.vocab['[PAD]'], 'EOQ': tokenizer.vocab['[unused2]']}
     predictor = build_predictor(args, tokenizer, symbols, model, logger)

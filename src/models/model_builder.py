@@ -116,9 +116,9 @@ class Bert(nn.Module):
     def __init__(self, temp_dir, cased=False, finetune=False):
         super(Bert, self).__init__()
         if(cased):
-            self.model = BertModel.from_pretrained('bert_data/cased/', cache_dir=temp_dir)
+            self.model = BertModel.from_pretrained('bert_models/cased/', cache_dir=temp_dir)
         else:
-            self.model = BertModel.from_pretrained('bert_data/uncased/', cache_dir=temp_dir)
+            self.model = BertModel.from_pretrained('bert_models/uncased/', cache_dir=temp_dir)
 
         self.finetune = finetune
 
@@ -136,7 +136,7 @@ class AbsSummarizer(nn.Module):
         super(AbsSummarizer, self).__init__()
         self.args = args
         self.device = device
-        self.bert = Bert(args.temp_dir,False, args.finetune_bert)
+        self.bert = Bert(args.temp_dir, args.cased, args.finetune_bert)
 
         if (args.encoder == 'baseline'):
             bert_config = BertConfig(self.bert.model.config.vocab_size, hidden_size=args.enc_hidden_size,
