@@ -142,3 +142,4 @@ dmypy.json
 # Data
 data/*.json
 raw_data/*.txt
+mappings/*.txt

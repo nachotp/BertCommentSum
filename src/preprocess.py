@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     parser.add_argument("-mode", default='', type=str)
     parser.add_argument("-select_mode", default='greedy', type=str)
-    parser.add_argument("-map_path", default='../data/')
+    parser.add_argument("-map_path", default='../mappings/')
     parser.add_argument("-raw_path", default='../raw_data')
     parser.add_argument("-save_path", default='../data/')
 
@@ -65,7 +65,11 @@ if __name__ == '__main__':
 
     parser.add_argument('-dataset', default='')
 
-    parser.add_argument('-n_cpus', default=4, type=int)
+    parser.add_argument('-n_cpus', default=32, type=int)
+
+    parser.add_argument('-train_ratio', default=0.7, type=float)
+    parser.add_argument('-val_ratio', default=0.15, type=float)
+    parser.add_argument('-test_ratio', default=0.15, type=float)
 
 
     args = parser.parse_args()

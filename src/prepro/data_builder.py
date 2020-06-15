@@ -9,6 +9,7 @@ import re
 import subprocess
 from collections import Counter
 from os.path import join as pjoin
+from math import floor
 
 import torch
 from multiprocess import Pool
@@ -328,6 +329,39 @@ def _format_to_bert(params):
     torch.save(datasets, save_file)
     datasets = []
     gc.collect()
+
+
+def create_mappings(args):
+    if args.train_ratio + args.val_ratio + args.test_ratio != 1:
+        raise Exception(f"Invalid ratios for splitting data into Train, Test and Validation: {args.train_ratio} + {args.test_ratio} + {args.val_ratio} != 1")
+    data = [f.split('/')[-1].split('.')[0] for f in glob.glob(pjoin(args.save_path, '*.json'))]
+
+    l = len(data)
+
+    print(f"Splitting {l} documents with {args.train_ratio} {args.test_ratio} {args.val_ratio} ratios")
+
+    train, test, valid = floor(args.train_ratio*l), floor(args.test_ratio*l), floor(args.val_ratio*l)
+    l_prime = train + test + valid
+    train += l-l_prime
+    random.shuffle(data)
+    train_list = data[:train]
+    valid_list = data[train:train+valid]
+    test_list = data[train+valid:]
+
+    with open(pjoin(args.map_path, 'mapping_train.txt'), "w", encoding="utf-8") as fp:
+        fp.write("\n".join(train_list))
+        fp.write("\n")
+        print(f'{train} Train Documents saved on: mapping_train.txt')
+    
+    with open(pjoin(args.map_path, 'mapping_test.txt'), "w", encoding="utf-8") as fp:
+        fp.write("\n".join(test_list))
+        fp.write("\n")
+        print(f'{test} Test Documents saved on: mapping_test.txt')
+
+    with open(pjoin(args.map_path, 'mapping_valid.txt'), "w", encoding="utf-8") as fp:
+        fp.write("\n".join(valid_list))
+        fp.write("\n")
+        print(f'{valid} Validation Documents saved on: mapping_valid.txt')
 
 
 def format_to_lines(args):
