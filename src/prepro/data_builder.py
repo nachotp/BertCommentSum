@@ -35,7 +35,7 @@ def load_json(p, lower):
     source = []
     tgt = []
     flag = False
-    for sent in json.load(open(p))['sentences']:
+    for sent in json.load(open(p, encoding="utf-8"))['sentences']:
         tokens = [t['word'] for t in sent['tokens']]
         if (lower):
             tokens = [t.lower() for t in tokens]
@@ -211,7 +211,7 @@ class BertData():
             self.tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-cased')
         else:
             self.tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', do_lower_case=True)
-
+        print(self.tokenizer)
         self.sep_token = '[SEP]'
         self.cls_token = '[CLS]'
         self.pad_token = '[PAD]'
@@ -282,10 +282,11 @@ def format_to_bert(args):
         datasets = ['train', 'valid', 'test']
     for corpus_type in datasets:
         a_lst = []
-        for json_f in glob.glob(pjoin(args.raw_path, '*' + corpus_type + '.*.json')):
+        for json_f in glob.glob(pjoin(args.json_path, '*' + corpus_type + '.*.json')):
             real_name = json_f.split('/')[-1]
-            a_lst.append((corpus_type, json_f, args, pjoin(args.save_path, real_name.replace('json', 'bert.pt'))))
+            a_lst.append((corpus_type, json_f, args, pjoin(args.bert_path, real_name.replace('json', 'bert.pt'))))
         print(a_lst)
+        
         pool = Pool(args.n_cpus)
         for d in pool.imap(_format_to_bert, a_lst):
             pass
@@ -304,7 +305,7 @@ def _format_to_bert(params):
     bert = BertData(args)
 
     logger.info('Processing %s' % json_file)
-    jobs = json.load(open(json_file))
+    jobs = json.load(open(json_file, encoding="utf-8"))
     datasets = []
     for d in jobs:
         source, tgt = d['src'], d['tgt']
@@ -368,11 +369,11 @@ def format_to_lines(args):
     corpus_mapping = {}
     for corpus_type in ['valid', 'test', 'train']:
         temp = []
-        for line in open(pjoin(args.map_path, 'mapping_' + corpus_type + '.txt')):
-            temp.append(hashhex(line.strip()))
+        for line in open(pjoin(args.map_path, 'mapping_' + corpus_type + '.txt'), encoding="utf-8"):
+            temp.append(line.strip())
         corpus_mapping[corpus_type] = {key.strip(): 1 for key in temp}
     train_files, valid_files, test_files = [], [], []
-    for f in glob.glob(pjoin(args.raw_path, '*.json')):
+    for f in glob.glob(pjoin(args.save_path, '*.json')):
         real_name = f.split('/')[-1].split('.')[0]
         if (real_name in corpus_mapping['valid']):
             valid_files.append(f)
@@ -392,20 +393,20 @@ def format_to_lines(args):
         for d in pool.imap_unordered(_format_to_lines, a_lst):
             dataset.append(d)
             if (len(dataset) > args.shard_size):
-                pt_file = "{:s}.{:s}.{:d}.json".format(args.save_path, corpus_type, p_ct)
-                with open(pt_file, 'w') as save:
+                pt_file = "{:s}{:s}.{:d}.json".format(args.json_path, corpus_type, p_ct)
+                with open(pt_file, 'w', encoding="utf-8") as save:
                     # save.write('\n'.join(dataset))
-                    save.write(json.dumps(dataset))
+                    save.write(json.dumps(dataset, ensure_ascii=False))
                     p_ct += 1
                     dataset = []
 
         pool.close()
         pool.join()
         if (len(dataset) > 0):
-            pt_file = "{:s}.{:s}.{:d}.json".format(args.save_path, corpus_type, p_ct)
-            with open(pt_file, 'w') as save:
+            pt_file = "{:s}{:s}.{:d}.json".format(args.json_path, corpus_type, p_ct)
+            with open(pt_file, 'w', encoding="utf-8") as save:
                 # save.write('\n'.join(dataset))
-                save.write(json.dumps(dataset))
+                save.write(json.dumps(dataset, ensure_ascii=False))
                 p_ct += 1
                 dataset = []
 

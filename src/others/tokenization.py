@@ -34,6 +34,8 @@ PRETRAINED_VOCAB_ARCHIVE_MAP = {
     'bert-base-multilingual-uncased': "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-multilingual-uncased-vocab.txt",
     'bert-base-multilingual-cased': "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-multilingual-cased-vocab.txt",
     'bert-base-chinese': "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-chinese-vocab.txt",
+    'dccuchile/bert-base-spanish-wwm-cased': "https://users.dcc.uchile.cl/~jperez/beto/cased_2M/vocab.txt",
+    'dccuchile/bert-base-spanish-wwm-uncased': "https://users.dcc.uchile.cl/~jperez/beto/cased_2M/vocab.txt"
 }
 PRETRAINED_VOCAB_POSITIONAL_EMBEDDINGS_SIZE_MAP = {
     'bert-base-uncased': 512,
