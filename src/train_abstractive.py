@@ -234,7 +234,7 @@ def test_abs(args, device_id, pt, step):
 def test_text_abs(args, device_id, pt, step):
     device = "cpu" if args.visible_gpus == '-1' else "cuda"
     if pt != '':
-        test_fro = pt
+        test_from = pt
     else:
         test_from = args.test_from
     logger.info('Loading checkpoint from %s' % test_from)
