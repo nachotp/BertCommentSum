@@ -15,7 +15,6 @@ from multiprocess import Pool
 
 from others.logging import logger
 from others.tokenization import BertTokenizer
-from pytorch_transformers import XLNetTokenizer
 
 from others.utils import clean
 from prepro.utils import _get_word_ngrams
@@ -39,7 +38,7 @@ def load_json(p, lower):
         tokens = [t['word'] for t in sent['tokens']]
         if (lower):
             tokens = [t.lower() for t in tokens]
-        if (tokens[0] == '@highlight'):
+        if (tokens[0] == '@title'):
             flag = True
             tgt.append([])
             continue
@@ -117,10 +116,10 @@ def tokenize(args):
     print("Making list of files to tokenize...")
     with open("mapping_for_corenlp.txt", "w") as f:
         for s in stories:
-            if (not s.endswith('story')):
+            if (not s.endswith('txt')):
                 continue
             f.write("%s\n" % (os.path.join(stories_dir, s)))
-    command = ['java', 'edu.stanford.nlp.pipeline.StanfordCoreNLP', '-annotators', 'tokenize,ssplit',
+    command = ['java', 'edu.stanford.nlp.pipeline.StanfordCoreNLP', '-props', 'spanish', '-annotators', 'tokenize,ssplit',
                '-ssplit.newlineIsSentenceBreak', 'always', '-filelist', 'mapping_for_corenlp.txt', '-outputFormat',
                'json', '-outputDirectory', tokenized_stories_dir]
     print("Tokenizing %i files in %s and saving in %s..." % (len(stories), stories_dir, tokenized_stories_dir))
@@ -207,7 +206,10 @@ def hashhex(s):
 class BertData():
     def __init__(self, args):
         self.args = args
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+        if args.cased:
+            self.tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-cased')
+        else:
+            self.tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', do_lower_case=True)
 
         self.sep_token = '[SEP]'
         self.cls_token = '[CLS]'
