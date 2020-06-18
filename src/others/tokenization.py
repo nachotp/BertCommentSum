@@ -22,7 +22,7 @@ import os
 import unicodedata
 from io import open
 
-from transformers import cached_path
+from pytorch_transformers import cached_path
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,10 @@ PRETRAINED_VOCAB_POSITIONAL_EMBEDDINGS_SIZE_MAP = {
     'bert-base-multilingual-uncased': 512,
     'bert-base-multilingual-cased': 512,
     'bert-base-chinese': 512,
+    'dccuchile/bert-base-spanish-wwm-cased': 512,
+    'dccuchile/bert-base-spanish-wwm-uncased': 512
 }
+
 VOCAB_NAME = 'vocab.txt'
 
 

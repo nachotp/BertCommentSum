@@ -144,3 +144,4 @@ data/*.json
 raw_data/*.txt
 mappings/*.txt
 temp
+*.out

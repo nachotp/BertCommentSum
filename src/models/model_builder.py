@@ -2,7 +2,7 @@ import copy
 
 import torch
 import torch.nn as nn
-from transformers import BertModel, BertConfig
+from pytorch_transformers import BertModel, BertConfig
 from torch.nn.init import xavier_uniform_
 
 from models.decoder import TransformerDecoder
@@ -116,9 +116,9 @@ class Bert(nn.Module):
     def __init__(self, temp_dir, cased=False, finetune=False):
         super(Bert, self).__init__()
         if(cased):
-            self.model = BertModel.from_pretrained('dccuchile/bert-base-spanish-wwm-cased', cache_dir=temp_dir)
+            self.model = BertModel.from_pretrained('BETO', cache_dir=temp_dir)
         else:
-            self.model = BertModel.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', cache_dir=temp_dir)
+            self.model = BertModel.from_pretrained('BETO', cache_dir=temp_dir)
 
         self.finetune = finetune
 

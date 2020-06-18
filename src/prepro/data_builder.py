@@ -208,9 +208,9 @@ class BertData():
     def __init__(self, args):
         self.args = args
         if args.cased:
-            self.tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-cased')
+            self.tokenizer = BertTokenizer.from_pretrained('BETO/')
         else:
-            self.tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', do_lower_case=True)
+            self.tokenizer = BertTokenizer.from_pretrained('BETO/', do_lower_case=True)
         print(self.tokenizer)
         self.sep_token = '[SEP]'
         self.cls_token = '[CLS]'

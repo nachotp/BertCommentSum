@@ -12,7 +12,7 @@ import signal
 import time
 
 import torch
-from transformers import BertTokenizer
+from pytorch_transformers import BertTokenizer
 
 import distributed
 from models import data_loader, model_builder
@@ -187,9 +187,9 @@ def validate(args, device_id, pt, step):
                                         shuffle=False, is_test=False)
 
     if args.cased:
-        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-cased', cache_dir=args.temp_dir)
+        tokenizer = BertTokenizer.from_pretrained('BETO/', cache_dir=args.temp_dir)
     else:
-        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', do_lower_case=True, cache_dir=args.temp_dir)
+        tokenizer = BertTokenizer.from_pretrained('BETO/', do_lower_case=True, cache_dir=args.temp_dir)
     symbols = {'BOS': tokenizer.vocab['[unused0]'], 'EOS': tokenizer.vocab['[unused1]'],
                'PAD': tokenizer.vocab['[PAD]'], 'EOQ': tokenizer.vocab['[unused2]']}
 
@@ -222,9 +222,9 @@ def test_abs(args, device_id, pt, step):
                                        args.test_batch_size, device,
                                        shuffle=False, is_test=True)
     if args.cased:
-        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-cased', cache_dir=args.temp_dir)
+        tokenizer = BertTokenizer.from_pretrained('BETO/', cache_dir=args.temp_dir)
     else:
-        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', do_lower_case=True, cache_dir=args.temp_dir)
+        tokenizer = BertTokenizer.from_pretrained('BETO/', do_lower_case=True, cache_dir=args.temp_dir)
     symbols = {'BOS': tokenizer.vocab['[unused0]'], 'EOS': tokenizer.vocab['[unused1]'],
                'PAD': tokenizer.vocab['[PAD]'], 'EOQ': tokenizer.vocab['[unused2]']}
     predictor = build_predictor(args, tokenizer, symbols, model, logger)
@@ -253,9 +253,9 @@ def test_text_abs(args, device_id, pt, step):
                                        args.test_batch_size, device,
                                        shuffle=False, is_test=True)
     if args.cased:
-        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-cased', cache_dir=args.temp_dir)
+        tokenizer = BertTokenizer.from_pretrained('BETO/', cache_dir=args.temp_dir)
     else:
-        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', do_lower_case=True, cache_dir=args.temp_dir)
+        tokenizer = BertTokenizer.from_pretrained('BETO/', do_lower_case=True, cache_dir=args.temp_dir)
     symbols = {'BOS': tokenizer.vocab['[unused0]'], 'EOS': tokenizer.vocab['[unused1]'],
                'PAD': tokenizer.vocab['[PAD]'], 'EOQ': tokenizer.vocab['[unused2]']}
     predictor = build_predictor(args, tokenizer, symbols, model, logger)
@@ -326,9 +326,9 @@ def train_abs_single(args, device_id):
     logger.info(model)
 
     if args.cased:
-        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-cased', cache_dir=args.temp_dir)
+        tokenizer = BertTokenizer.from_pretrained('BETO/', cache_dir=args.temp_dir)
     else:
-        tokenizer = BertTokenizer.from_pretrained('dccuchile/bert-base-spanish-wwm-uncased', do_lower_case=True, cache_dir=args.temp_dir)
+        tokenizer = BertTokenizer.from_pretrained('BETO/', do_lower_case=True, cache_dir=args.temp_dir)
     symbols = {'BOS': tokenizer.vocab['[unused0]'], 'EOS': tokenizer.vocab['[unused1]'],
                'PAD': tokenizer.vocab['[PAD]'], 'EOQ': tokenizer.vocab['[unused2]']}
 
