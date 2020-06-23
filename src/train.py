@@ -29,7 +29,7 @@ if __name__ == '__main__':
     parser.add_argument("-task", default='abs', type=str, choices=['abs'])
     parser.add_argument("-encoder", default='bert', type=str, choices=['bert', 'baseline'])
     parser.add_argument("-mode", default='train', type=str, choices=['train', 'validate', 'test'])
-    parser.add_argument("-bert_data_path", default='bert_data/micro')
+    parser.add_argument("-bert_data_path", default='/home/nachotp/scratch/bert_data/')
     parser.add_argument("-model_path", default='models/')
     parser.add_argument("-result_path", default='results/')
     parser.add_argument("-temp_dir", default='temp/')

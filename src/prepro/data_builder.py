@@ -108,8 +108,8 @@ def load_xml(p):
 
 
 def tokenize(args):
-    stories_dir = os.path.abspath(args.raw_path)
-    tokenized_stories_dir = os.path.abspath(args.save_path)
+    stories_dir = args.raw_path # os.path.abspath(args.raw_path)
+    tokenized_stories_dir = args.save_path # os.path.abspath(args.save_path)
 
     print("Preparing to tokenize %s to %s..." % (stories_dir, tokenized_stories_dir))
     stories = os.listdir(stories_dir)
@@ -333,13 +333,13 @@ def _format_to_bert(params):
 
 
 def create_mappings(args):
-    if args.train_ratio + args.val_ratio + args.test_ratio != 1:
-        raise Exception(f"Invalid ratios for splitting data into Train, Test and Validation: {args.train_ratio} + {args.test_ratio} + {args.val_ratio} != 1")
+    # if args.train_ratio + args.val_ratio + args.test_ratio != 1:
+    #    raise Exception(f"Invalid ratios for splitting data into Train, Test and Validation: {args.train_ratio} + {args.test_ratio} + {args.val_ratio} != 1")
     data = [f.split('/')[-1].split('.')[0] for f in glob.glob(pjoin(args.save_path, '*.json'))]
 
     l = len(data)
 
-    print(f"Splitting {l} documents with {args.train_ratio} {args.test_ratio} {args.val_ratio} ratios")
+    # print(f"Splitting {l} documents with {args.train_ratio} {args.test_ratio} {args.val_ratio} ratios")
 
     train, test, valid = floor(args.train_ratio*l), floor(args.test_ratio*l), floor(args.val_ratio*l)
     l_prime = train + test + valid
