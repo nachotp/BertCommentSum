@@ -65,7 +65,7 @@ class TransformerDecoderLayer(nn.Module):
         input_norm = self.layer_norm_1(inputs)
         all_input = input_norm
         if previous_input is not None:
-            all_input = torch.cat((previous_input, input_norm), dim=1)
+            all_input = torch.cat((previous_input, input_norm), dim=1) #<-- GRAPH EMB
             dec_mask = None
 
         query = self.self_attn(all_input, all_input, input_norm,
