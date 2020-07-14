@@ -47,10 +47,11 @@ if __name__ == '__main__':
     parser.add_argument("-mode", default='', type=str)
     parser.add_argument("-select_mode", default='greedy', type=str)
     parser.add_argument("-map_path", default='mappings/')
-    parser.add_argument("-raw_path", default='raw_data/')
+    parser.add_argument("-raw_path", default='/home/nachotp/scratch/raw_data/')
     parser.add_argument("-save_path", default='/home/nachotp/scratch/data/')
     parser.add_argument("-json_path", default='/home/nachotp/scratch/json_data/')
     parser.add_argument("-bert_path", default='/home/nachotp/scratch/bert_data/')
+    parser.add_argument("-meta_path", default='/home/nachotp/scratch/metadata/')
 
     parser.add_argument("-shard_size", default=2000, type=int)
     parser.add_argument('-min_src_nsents', default=3, type=int)

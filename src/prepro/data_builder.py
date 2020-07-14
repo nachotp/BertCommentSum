@@ -308,7 +308,7 @@ def _format_to_bert(params):
     jobs = json.load(open(json_file, encoding="utf-8"))
     datasets = []
     for d in jobs:
-        source, tgt = d['src'], d['tgt']
+        source, tgt, idlist, likes = d['src'], d['tgt'], d['idlist'], d['likes']
 
         sent_labels = greedy_selection(source[:args.max_src_nsents], tgt, 3)
         if (args.lower):
@@ -323,7 +323,7 @@ def _format_to_bert(params):
         src_subtoken_idxs, sent_labels, tgt_subtoken_idxs, segments_ids, cls_ids, src_txt, tgt_txt = b_data
         b_data_dict = {"src": src_subtoken_idxs, "tgt": tgt_subtoken_idxs,
                        "src_sent_labels": sent_labels, "segs": segments_ids, 'clss': cls_ids,
-                       'src_txt': src_txt, "tgt_txt": tgt_txt}
+                       'src_txt': src_txt, "tgt_txt": tgt_txt, "id_list": idlist, "likes": likes}
         datasets.append(b_data_dict)
     logger.info('Processed instances %d' % len(datasets))
     logger.info('Saving to %s' % save_file)
@@ -415,7 +415,10 @@ def _format_to_lines(params):
     f, args = params
     print(f)
     source, tgt = load_json(f, args.lower)
-    return {'src': source, 'tgt': tgt}
+    meta = pjoin(args.meta_path,f.split("/")[-1].split(".")[0]+".json")
+    # print(meta)
+    metadata = json.load(open(meta))
+    return {'src': source, 'tgt': tgt, 'idlist': metadata["idlist"], "likes": metadata["likes"]}
 
 
 
