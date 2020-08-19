@@ -3,6 +3,9 @@ import gc
 import glob
 import random
 
+import json
+import sys
+
 import torch
 
 from others.logging import logger
@@ -25,6 +28,21 @@ class Batch(object):
             pre_segs = [x[2] for x in data]
             pre_clss = [x[3] for x in data]
             pre_src_sent_labels = [x[4] for x in data]
+            pre_likes = [x[5] for x in data]
+            likes = []
+            for ex_cls, ex_likes, cc in zip(pre_clss, pre_likes, pre_src):
+                i = 0
+                pre_ex_likes = []
+                # print("cls:",len(ex_cls),"likes", len(ex_likes), "src", len(cc))
+                while i < min(len(ex_cls), len(ex_likes)) - 1:
+                    pre_ex_likes += [ex_likes[i] for x in range(ex_cls[i+1]-ex_cls[i])]
+                    i += 1
+                pre_ex_likes += [ex_likes[i] for x in range(len(cc)-ex_cls[i])]
+                # print("likes vs src", len(pre_ex_likes), len(cc))
+                if len(pre_ex_likes) != len(cc):
+                    logger.warning("Likes and src len mismatch, ignoring like attention layer")
+                    pre_ex_likes = [1] * len(cc)
+                likes.append(pre_ex_likes)
 
             src = torch.tensor(self._pad(pre_src, 0))
             tgt = torch.tensor(self._pad(pre_tgt, 0))
@@ -48,6 +66,7 @@ class Batch(object):
             setattr(self, 'segs', segs.to(device))
             setattr(self, 'mask_src', mask_src.to(device))
             setattr(self, 'mask_tgt', mask_tgt.to(device))
+            setattr(self, 'likes',torch.tensor(self._pad(likes, 0)).to(device))
 
 
             if (is_test):
@@ -186,21 +205,44 @@ class DataIterator(object):
         return xs
 
 
-
+    def weighted_choice(self, weights, random=random):
+        """ Given a list of weights [w_0, w_1, ..., w_n-1],
+        return an index i in range(n) with probability proportional to w_i. """
+        rnd = random.random() * sum(weights)
+        for i, w in enumerate(weights):
+            if w<0:
+                raise ValueError("Negative weight encountered.")
+            rnd -= w
+            if rnd < 0:
+                return i
+        raise ValueError("Sum of weights is not positive")
 
 
 
     def preprocess(self, ex, is_test):
+        token_EOS = [2]
+        token_EOT = [16]
         src = ex['src']
-        tgt = ex['tgt'][:self.args.max_tgt_len][:-1]+[2]
+        tgt = ex['tgt'][:self.args.max_tgt_len][:-1]+token_EOT
         src_sent_labels = ex['src_sent_labels']
         segs = ex['segs']
+        likes = [x+1 for x in ex['likes']]
+        chosen_like = self.weighted_choice(likes)
+        
         if(not self.args.use_interval):
             segs=[0]*len(segs)
         clss = ex['clss']
+        likes = [x+1 for x in ex['likes']][:len(clss)]
+        chosen_like = self.weighted_choice(likes)
         src_txt = ex['src_txt']
         tgt_txt = ex['tgt_txt']
 
+        # print(len(likes),len(clss), chosen_like, likes[chosen_like])
+        if chosen_like < len(likes) - 1:
+            tgt_comment = src[clss[chosen_like]+1:clss[chosen_like+1]-2] + token_EOS
+        else:
+            tgt_comment = src[clss[chosen_like]+1:len(src)-2] + token_EOS
+        tgt += tgt_comment
         end_id = [src[-1]]
         src = src[:-1][:self.args.max_pos - 1] + end_id
         segs = segs[:self.args.max_pos]
@@ -208,13 +250,22 @@ class DataIterator(object):
         src_sent_labels = src_sent_labels[:max_sent_id]
         clss = clss[:max_sent_id]
         # src_txt = src_txt[:max_sent_id]
-
-
-
+        #temp_dict = {
+        #    "src_txt": src_txt,
+        #    "src": src,
+        #    "tgt_txt": tgt_txt,
+        #    "tgt": tgt,
+        #    "src_sent_labels":src_sent_labels,
+        #    "segs":segs,
+        #    "clss": clss
+        #}
+        # json.dump(temp_dict, open("webeo.json","w", encoding="utf-8"), ensure_ascii=False)
+                
+        # sys.exit()
         if(is_test):
-            return src, tgt, segs, clss, src_sent_labels, src_txt, tgt_txt
+            return src, tgt, segs, clss, src_sent_labels, likes, src_txt, tgt_txt
         else:
-            return src, tgt, segs, clss, src_sent_labels
+            return src, tgt, segs, clss, src_sent_labels, likes
 
     def batch_buffer(self, data, batch_size):
         minibatch, size_so_far = [], 0

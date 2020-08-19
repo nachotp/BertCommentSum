@@ -71,7 +71,7 @@ if __name__ == '__main__':
     parser.add_argument("-beam_size", default=5, type=int)
     parser.add_argument("-min_length", default=15, type=int)
     parser.add_argument("-max_length", default=150, type=int)
-    parser.add_argument("-max_tgt_len", default=140, type=int)
+    parser.add_argument("-max_tgt_len", default=512, type=int)
 
 
 
@@ -95,7 +95,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-visible_gpus', default='-1', type=str)
     parser.add_argument('-gpu_ranks', default='0', type=str)
-    parser.add_argument('-log_file', default='../logs/cnndm.log')
+    parser.add_argument('-log_file', default='../logs/newcnndm.log')
     parser.add_argument('-seed', default=666, type=int)
 
     parser.add_argument("-test_all", type=str2bool, nargs='?',const=True,default=False)

@@ -140,7 +140,7 @@ class AbsSummarizer(nn.Module):
 
         if (args.encoder == 'baseline'):
             bert_config = BertConfig(self.bert.model.config.vocab_size, hidden_size=args.enc_hidden_size,
-                                     num_hidden_layers=args.enc_layers, num_attention_heads=8,
+                                     num_hidden_layers=args.enc_layers, num_attention_heads=12,
                                      intermediate_size=args.enc_ff_size,
                                      hidden_dropout_prob=args.enc_dropout,
                                      attention_probs_dropout_prob=args.enc_dropout)
@@ -159,7 +159,8 @@ class AbsSummarizer(nn.Module):
         self.decoder = TransformerDecoder(
             self.args.dec_layers,
             self.args.dec_hidden_size, heads=self.args.dec_heads,
-            d_ff=self.args.dec_ff_size, dropout=self.args.dec_dropout, embeddings=tgt_embeddings)
+            d_ff=self.args.dec_ff_size, dropout=self.args.dec_dropout, embeddings=tgt_embeddings
+        )
 
         self.generator = get_generator(self.vocab_size, self.args.dec_hidden_size, device)
         self.generator[0].weight = self.decoder.embeddings.weight
@@ -189,8 +190,19 @@ class AbsSummarizer(nn.Module):
 
         self.to(device)
 
-    def forward(self, src, tgt, segs, clss, mask_src, mask_tgt, mask_cls):
+    def forward(self, src, tgt, segs, clss, mask_src, mask_tgt, mask_cls, likes=None):
         top_vec = self.bert(src, segs, mask_src)
+        # print("top_vec",top_vec.shape,top_vec.dtype)
+        if likes is not None:
+            likes = torch.sqrt(likes.float())
+            max_likes = torch.max(likes,dim=1).values.float()[:,None]
+
+            norm_likes = (likes/max_likes)[:,:,None]
+            # print("norm_likes",norm_likes.shape, norm_likes.dtype)
+            top_vec = top_vec * norm_likes
+        # print("new top_vec",top_vec.shape, top_vec.dtype)
+        # exit
         dec_state = self.decoder.init_decoder_state(src, top_vec)
-        decoder_outputs, state = self.decoder(tgt[:, :-1], top_vec, dec_state)
+        decoder_outputs, state = self.decoder(tgt[:, :-1], top_vec, dec_state) # <-- Pasar vector de grafo
+
         return decoder_outputs, None
