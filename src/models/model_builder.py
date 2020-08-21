@@ -193,7 +193,7 @@ class AbsSummarizer(nn.Module):
     def forward(self, src, tgt, segs, clss, mask_src, mask_tgt, mask_cls, likes=None):
         top_vec = self.bert(src, segs, mask_src)
         # print("top_vec",top_vec.shape,top_vec.dtype)
-        if likes is not None:
+        if likes is not None and self.args.mode == "train":
             likes = torch.sqrt(likes.float())
             max_likes = torch.max(likes,dim=1).values.float()[:,None]
 

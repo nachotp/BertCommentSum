@@ -242,7 +242,12 @@ class DataIterator(object):
             tgt_comment = src[clss[chosen_like]+1:clss[chosen_like+1]-2] + token_EOS
         else:
             tgt_comment = src[clss[chosen_like]+1:len(src)-2] + token_EOS
-        tgt += tgt_comment
+        
+        if self.args.predict_title:
+            tgt += tgt_comment
+        else:
+            tgt = [6] + tgt_comment
+
         end_id = [src[-1]]
         src = src[:-1][:self.args.max_pos - 1] + end_id
         segs = segs[:self.args.max_pos]
@@ -259,7 +264,7 @@ class DataIterator(object):
         #    "segs":segs,
         #    "clss": clss
         #}
-        # json.dump(temp_dict, open("webeo.json","w", encoding="utf-8"), ensure_ascii=False)
+        # json.dump(temp_dict, open("data_sample.json","w", encoding="utf-8"), ensure_ascii=False)
                 
         # sys.exit()
         if(is_test):

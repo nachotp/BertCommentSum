@@ -57,7 +57,7 @@ if __name__ == '__main__':
     parser.add_argument("-enc_ff_size", default=512, type=int)
     parser.add_argument("-enc_dropout", default=0.2, type=float)
     parser.add_argument("-enc_layers", default=6, type=int)
-
+    parser.add_argument("-predict_title", type=str2bool, nargs='?',const=True,default=True)
     # params for EXT
     parser.add_argument("-ext_dropout", default=0.2, type=float)
     parser.add_argument("-ext_layers", default=2, type=int)
