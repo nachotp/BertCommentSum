@@ -51,7 +51,7 @@ if __name__ == '__main__':
     parser.add_argument("-dec_dropout", default=0.2, type=float)
     parser.add_argument("-dec_layers", default=6, type=int)
     parser.add_argument("-dec_hidden_size", default=768, type=int)
-    parser.add_argument("-dec_heads", default=8, type=int)
+    parser.add_argument("-dec_heads", default=6, type=int)
     parser.add_argument("-dec_ff_size", default=2048, type=int)
     parser.add_argument("-enc_hidden_size", default=512, type=int)
     parser.add_argument("-enc_ff_size", default=512, type=int)
