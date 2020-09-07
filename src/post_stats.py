@@ -81,7 +81,7 @@ def cal_repeat(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-mode", default='', type=str)
-    parser.add_argument("-result_path", default='../../results/cnndm.0')
+    parser.add_argument("-result_path", default='../results/cnndm.0')
 
 
     args = parser.parse_args()

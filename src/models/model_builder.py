@@ -191,7 +191,7 @@ class AbsSummarizer(nn.Module):
         self.to(device)
 
     def forward(self, src, tgt, segs, clss, mask_src, mask_tgt, mask_cls, likes=None):
-        print("attn: ",self.args.include_like_dist)
+        # print("attn: ",self.args.include_like_dist)
         top_vec = self.bert(src, segs, mask_src)
         # print("top_vec",top_vec.shape,top_vec.dtype)
         

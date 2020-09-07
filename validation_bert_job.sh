@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=01:30:00
+#SBATCH --time=03:30:00
 #SBATCH --account=def-emilios
 #SBATCH --mail-user=thenachotp@gmail.com
 #SBATCH --mail-type=ALL
@@ -14,4 +14,4 @@ export CLASSPATH=$CLASSPATH:~/projects/def-emilios/nachotp/BertCommentSum/stanfo
 
 #python src/train.py -task abs -mode validate -batch_size 3000 -test_batch_size 500  -log_file logs/sqrtattn_notitles_val.log -sep_optim true -use_interval true -visible_gpus 0 -max_pos 512 -max_length 512 -alpha 0.95 -min_length 10 -result_path logs/sqrtatt_notitle.log 
 
-python src/train.py -task abs -mode validate -batch_size 3000 -test_batch_size 500  -log_file logs/noattn_notitles_val.log -sep_optim true -use_interval true -visible_gpus 0 -max_pos 512 -max_length 512 -alpha 0.95 -min_length 10 -result_path logs/noattn_notitle.log 
+python src/train.py -task abs -mode validate -batch_size 3000 -test_batch_size 500  -log_file logs/nofinetune_noattn_notitles_val.log -sep_optim true -use_interval true -visible_gpus 0 -max_pos 512 -max_length 512 -alpha 0.95 -min_length 10 -result_path logs/nofinetune_noattn_notitle.log 

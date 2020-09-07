@@ -100,7 +100,7 @@ class Translator(object):
                 len(translation_batch["predictions"]))
         batch_size = batch.batch_size
 
-        preds, pred_score, gold_score, tgt_str, src =  translation_batch["predictions"],translation_batch["scores"],translation_batch["gold_score"],batch.tgt_str, batch.src
+        preds, pred_score, gold_score, tgt_str, src, likes =  translation_batch["predictions"],translation_batch["scores"],translation_batch["gold_score"],batch.tgt_str, batch.src, batch.likes
 
         translations = []
         for b in range(batch_size):
@@ -114,7 +114,7 @@ class Translator(object):
             # src = self.spm.DecodeIds([int(t) for t in translation_batch['batch'].src[0][5] if int(t) != len(self.spm)])
             raw_src = [self.vocab.ids_to_tokens[int(t)] for t in src[b]][:500]
             raw_src = ' '.join(raw_src)
-            translation = (pred_sents, gold_sent, raw_src)
+            translation = (pred_sents, gold_sent, raw_src, likes[b].tolist())
             # translation = (pred_sents[0], gold_sent)
             translations.append(translation)
 
@@ -150,7 +150,7 @@ class Translator(object):
                 translations = self.from_batch(batch_data)
 
                 for trans in translations:
-                    pred, gold, src = trans
+                    pred, gold, src, likes = trans
                     pred_str = pred.replace('[unused0]', '').replace('[unused3]', '').replace('[PAD]', '').replace('[unused1]', '').replace(r' +', ' ').replace(' [unused2] ', '<q>').replace('[unused2]', '').strip()
                     gold_str = gold.strip()
                     if(self.args.recall_eval):
@@ -174,7 +174,7 @@ class Translator(object):
                     # self.raw_gold_out_file.write(' '.join(gold).strip() + '\n')
                     self.can_out_file.write(pred_str + '\n')
                     self.gold_out_file.write(gold_str + '\n')
-                    self.src_out_file.write(src.strip() + '\n')
+                    self.src_out_file.write(src.strip() + f'<Likes> {likes}' + '\n')
                     ct += 1
                 self.can_out_file.flush()
                 self.gold_out_file.flush()
@@ -267,7 +267,7 @@ class Translator(object):
         results["scores"] = [[] for _ in range(batch_size)]  # noqa: F812
         results["gold_score"] = [0] * batch_size
         results["batch"] = batch
-
+        results["likes"] = batch.likes
         for step in range(max_length):
             decoder_input = alive_seq[:, -1].view(1, -1)
 
