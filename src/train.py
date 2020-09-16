@@ -38,13 +38,13 @@ if __name__ == '__main__':
     parser.add_argument("-test_batch_size", default=200, type=int)
 
     parser.add_argument("-max_pos", default=512, type=int)
-    parser.add_argument("-use_interval", type=str2bool, nargs='?',const=True,default=True)
-    parser.add_argument("-cased", type=str2bool, nargs='?',const=True,default=False)
+    parser.add_argument("-use_interval", type=str2bool, nargs='?',const=True, default=True)
+    parser.add_argument("-cased", type=str2bool, nargs='?',const=True, default=False)
 
-    parser.add_argument("-sep_optim", type=str2bool, nargs='?',const=True,default=False)
+    parser.add_argument("-sep_optim", type=str2bool, nargs='?',const=True, default=False)
     parser.add_argument("-lr_bert", default=2e-3, type=float)
     parser.add_argument("-lr_dec", default=2e-3, type=float)
-    parser.add_argument("-use_bert_emb", type=str2bool, nargs='?',const=True,default=False)
+    parser.add_argument("-use_bert_emb", type=str2bool, nargs='?',const=True, default=False)
 
     parser.add_argument("-share_emb", type=str2bool, nargs='?', const=True, default=False)
     parser.add_argument("-finetune_bert", type=str2bool, nargs='?', const=True, default=True)
@@ -57,8 +57,9 @@ if __name__ == '__main__':
     parser.add_argument("-enc_ff_size", default=512, type=int)
     parser.add_argument("-enc_dropout", default=0.2, type=float)
     parser.add_argument("-enc_layers", default=6, type=int)
-    parser.add_argument("-predict_title", type=str2bool, nargs='?',const=True,default=True)
-    parser.add_argument("-include_like_dist", type=str2bool, nargs='?',const=True,default=True)
+    parser.add_argument("-predict_title", type=str2bool, nargs='?',const=True, default=True)
+    parser.add_argument("-include_like_dist", type=str2bool, nargs='?',const=True, default=True)
+    parser.add_argument("-n_comments", default=1, type=int)
     # params for EXT
     parser.add_argument("-ext_dropout", default=0.2, type=float)
     parser.add_argument("-ext_layers", default=2, type=int)

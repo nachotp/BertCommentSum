@@ -225,24 +225,40 @@ class DataIterator(object):
         src = ex['src']
         tgt = ex['tgt'][:self.args.max_tgt_len][:-1]+token_EOT
         src_sent_labels = ex['src_sent_labels']
+        chosen_comments = []
+        clss = ex['clss']
+        clss = list(filter(lambda x: x < 512, clss))
         segs = ex['segs']
-        likes = [x+1 for x in ex['likes']]
-        chosen_like = self.weighted_choice(likes)
+
+        likes = [x+1 for x in ex['likes']][:len(clss)]
+
+        if len(likes) < self.args.n_comments:
+            chosen_comments = range(len(likes))
+        while len(chosen_comments) < self.args.n_comments and len(likes) >= self.args.n_comments:
+            chosen_like = self.weighted_choice(likes)
+
+            if chosen_like not in chosen_comments:
+                chosen_comments.append(chosen_like)
+
         
         if(not self.args.use_interval):
             segs=[0]*len(segs)
-        clss = ex['clss']
-        likes = [x+1 for x in ex['likes']][:len(clss)]
-        chosen_like = self.weighted_choice(likes)
+        #likes = [x+1 for x in ex['likes']][:len(clss)]
+
         src_txt = ex['src_txt']
         tgt_txt = ex['tgt_txt']
+        tgt_comment = []
 
-        # print(len(likes),len(clss), chosen_like, likes[chosen_like])
-        if chosen_like < len(likes) - 1:
-            tgt_comment = src[clss[chosen_like]+1:clss[chosen_like+1]-2] + token_EOS
-        else:
-            tgt_comment = src[clss[chosen_like]+1:len(src)-2] + token_EOS
-        
+        for chosen_like in chosen_comments:
+            if chosen_like < len(likes) - 1:
+                tgt_comment += src[clss[chosen_like]+1:clss[chosen_like+1]-1]
+            else:
+                
+                tgt_comment += src[clss[chosen_like]+1:len(src)-2]
+
+    
+
+
         if self.args.predict_title:
             tgt += tgt_comment
         else:
@@ -250,6 +266,7 @@ class DataIterator(object):
 
         end_id = [src[-1]]
         src = src[:-1][:self.args.max_pos - 1] + end_id
+        tgt = tgt[:-1][:self.args.max_pos - 1] + token_EOS
         segs = segs[:self.args.max_pos]
         max_sent_id = bisect.bisect_left(clss, self.args.max_pos)
         src_sent_labels = src_sent_labels[:max_sent_id]
@@ -267,6 +284,7 @@ class DataIterator(object):
         # json.dump(temp_dict, open("data_sample.json","w", encoding="utf-8"), ensure_ascii=False)
                 
         # sys.exit()
+
         if(is_test):
             return src, tgt, segs, clss, src_sent_labels, likes, src_txt, tgt_txt
         else:
