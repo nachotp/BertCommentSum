@@ -17,7 +17,7 @@ mccabe==0.6.1
 multiprocess==0.70.9
 numpy==1.17.4
 packaging==20.4
-protobuf==3.12.2
+protobuf==3.18.3
 pylint==2.5.3
 pyparsing==2.4.7
 pyrouge==0.1.3
